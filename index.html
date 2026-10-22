@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Surprise</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for Audio Synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Mali', cursive;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #050505;
+        }
+
+        /* Phase Transitions */
+        .fade-in { animation: fadeIn 1.5s forwards; }
+        .fade-out { animation: fadeOut 1.5s forwards; }
+        .hidden-phase { display: none !important; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Typing cursor effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .cake {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .flame-hitbox {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .flame {
+            width: 16px;
+            height: 28px;
+            background: #ff9d00;
+            border-radius: 50% 50% 20% 20% / 60% 60% 30% 30%;
+            box-shadow: 0 0 25px 8px rgba(255, 150, 0, 0.7), inset 0 0 5px rgba(255,255,255,0.8);
+            animation: flicker 0.12s infinite alternate, glow 1.5s infinite alternate;
+            transform-origin: bottom center;
+            transition: all 0.3s ease;
+        }
+
+        .flame.extinguished {
+            opacity: 0;
+            transform: scale(0) translateY(10px);
+            box-shadow: none;
+            animation: none;
+        }
+
+        .smoke {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+            bottom: 20px;
+            filter: blur(2px);
+        }
+
+        .flame.extinguished + .smoke {
+            animation: smokeRise 2s ease-out forwards;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px 5px rgba(255, 150, 0, 0.6), inset 0 0 5px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 35px 12px rgba(255, 180, 0, 0.8), inset 0 0 8px rgba(255,255,255,0.9); }
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.8; transform: translateY(0) scale(1); }
+            50% { opacity: 0.4; transform: translateY(-30px) scale(3) translateX(10px); }
+            100% { opacity: 0; transform: translateY(-60px) scale(5) translateX(-10px); }
+        }
+
+        #room-glow {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 160, 50, 0.15) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            transition: opacity 1s ease;
+            z-index: 0;
+        }
+
+        .letter-paper {
+            background: #fffdf5;
+            background-image: radial-gradient(#f4e8d3 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #5c4a3d;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid #ebd9c8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-paper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 10px;
+            background: repeating-linear-gradient(45deg, #ffb6b9, #ffb6b9 10px, #fae3d9 10px, #fae3d9 20px);
+        }
+
+        .floating-heart {
+            position: absolute;
+            animation: floatUp 4s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-100px) scale(1.5) rotate(20deg); opacity: 0; }
+        }
+
+        .receipt-card {
+            background-color: #fff;
+            position: relative;
+            border-radius: 12px 12px 4px 4px;
+        }
+        .receipt-card::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: radial-gradient(circle at 5px 0, #fff 5px, transparent 6px) repeat-x;
+            background-size: 10px 10px;
+        }
+        .tape {
+            background-color: rgba(255, 192, 203, 0.7);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Hover effects for image upload frames */
+        .photo-frame {
+            transition: transform 0.2s;
+        }
+        .photo-frame:active {
+            transform: scale(0.98);
+        }
+
+    </style>
+</head>
+
+<body class="w-full h-screen overflow-hidden flex flex-col items-center justify-center relative">
+
+    <!-- Firework Canvas -->
+    <canvas id="fireworksCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-40 hidden-phase"></canvas>
+
+    <!-- Phase 1: Black screen -->
+    <div id="phase1" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-30 cursor-pointer p-6">
+        <h1 id="typing-text" class="text-white text-2xl md:text-4xl font-semibold text-center leading-relaxed h-16 typing-cursor"></h1>
+        <p id="tap-hint" class="text-gray-500 text-sm mt-8 opacity-0 transition-opacity duration-1000">( แตะหน้าจอเพื่อไปต่อ )</p>
+    </div>
+
+    <!-- Phase 2: Cake and Candles -->
+    <div id="phase2" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a] z-20 hidden-phase">
+        <div id="room-glow"></div>
+        
+        <div class="h-20 mb-8 flex flex-col justify-end items-center z-20 px-6 text-center">
+            <h2 id="pray-text" class="text-[#ffdca8] text-2xl md:text-3xl font-medium tracking-wide drop-shadow-lg opacity-0 transition-opacity duration-1000">อธิฐานก่อนนะคะ…</h2>
+            <p id="blow-hint" class="text-white text-lg md:text-xl font-light mt-3 opacity-0 transition-opacity duration-1000">ดับไฟสิ (กดที่ไฟดวงไหนก็ได้เพื่อดับไฟ)</p>
+        </div>
+
+        <div id="cake-element" class="cake opacity-0 transition-opacity duration-[2000ms] z-10 flex justify-center items-center">
+            <div class="relative w-[300px] h-[320px]">
+                <svg viewBox="0 0 300 320" class="w-full h-full pointer-events-none drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <g id="bow">
+                            <path d="M -2,0 C -14,-10 -14,10 -2,0 M 2,0 C 14,-10 14,10 2,0" fill="none" stroke="#a02525" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="0" cy="0" r="2.5" fill="#a02525"/>
+                            <path d="M -1,2 Q -5,18 -2,45 M 1,2 Q 5,18 2,40" fill="none" stroke="#a02525" stroke-width="2.5" stroke-linecap="round"/>
+                        </g>
+                        <g id="sparkle-red">
+                            <path d="M 0,-8 Q 0,0 6,0 Q 0,0 0,8 Q 0,0 -6,0 Q 0,0 0,-8" fill="#a02525"/>
+                        </g>
+                        <g id="sparkle-gold">
+                            <path d="M 0,-6 Q 0,0 5,0 Q 0,0 0,6 Q 0,0 -5,0 Q 0,0 0,-6" fill="#c49a52"/>
+                        </g>
+                        <g id="heart-sprinkle">
+                            <path d="M 0,1 C -1,-2 -4,-2 -4,1 L 0,5 L 4,1 C 4,-2 1,-2 0,1" fill="#a02525"/>
+                        </g>
+                    </defs>
+
+                    <ellipse cx="150" cy="270" rx="120" ry="15" fill="#151515" opacity="0.3" filter="blur(4px)"/>
+                    <ellipse cx="150" cy="270" rx="130" ry="25" fill="#f4f1e8" opacity="0.05"/>
+
+                    <!-- Bottom Tier -->
+                    <path d="M 40, 260 Q 150, 280 260, 260 L 250, 160 Q 150, 180 50, 160 Z" fill="#f8f5eb" stroke="#9f8377" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M 50, 160 Q 150, 180 250, 160" fill="none" stroke="#9f8377" stroke-width="2.5" opacity="0.5"/>
+                    <path d="M 40, 260 Q 70, 275 95, 265 Q 120, 280 150, 268 Q 180, 280 205, 265 Q 230, 275 260, 260" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 45, 195 Q 100, 220 150, 195 Q 200, 220 255, 195" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M 42, 230 Q 100, 250 150, 230 Q 200, 250 258, 230" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+
+                    <!-- Top Tier -->
+                    <path d="M 65, 170 Q 150, 185 235, 170 L 230, 90 Q 150, 105 70, 90 Z" fill="#f8f5eb" stroke="#9f8377" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M 70, 90 Q 150, 105 230, 90" fill="none" stroke="#9f8377" stroke-width="2.5" opacity="0.5"/>
+                    <path d="M 70, 90 Q 150, 70 230, 90 Z" fill="#fdfbfa" stroke="#9f8377" stroke-width="2.5"/>
+                    <path d="M 65, 170 Q 100, 185 150, 175 Q 200, 185 235, 170" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 68, 125 Q 110, 145 150, 125 Q 190, 145 232, 125" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M 70, 90 Q 90, 105 110, 95 Q 130, 108 150, 98 Q 170, 108 190, 95 Q 210, 105 230, 90" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
+
+                    <!-- Sprinkles & Details -->
+                    <g transform="translate(100, 85) rotate(-15)"><use href="#heart-sprinkle"/></g>
+                    <g transform="translate(130, 80) rotate(10)"><use href="#heart-sprinkle"/></g>
+                    <g transform="translate(180, 82) rotate(-20)"><use href="#heart-sprinkle"/></g>
+                    <g transform="translate(210, 85) rotate(15)"><use href="#heart-sprinkle"/></g>
+
+                    <rect x="98" y="45" width="6" height="40" fill="#a02525" rx="1" transform="rotate(-4 101 65)"/>
+                    <path d="M 101, 45 L 101, 35" fill="none" stroke="#601515" stroke-width="1.5"/>
+                    <rect x="147" y="35" width="6" height="45" fill="#a02525" rx="1"/>
+                    <path d="M 150, 35 L 150, 25" fill="none" stroke="#601515" stroke-width="1.5"/>
+                    <rect x="196" y="45" width="6" height="40" fill="#a02525" rx="1" transform="rotate(4 199 65)"/>
+                    <path d="M 199, 45 L 199, 35" fill="none" stroke="#601515" stroke-width="1.5"/>
+
+                    <g transform="translate(85, 95) rotate(-5)"><use href="#bow"/></g>
+                    <g transform="translate(150, 100)"><use href="#bow"/></g>
+                    <g transform="translate(215, 95) rotate(5)"><use href="#bow"/></g>
+                    <g transform="translate(55, 175) rotate(-10)"><use href="#bow"/></g>
+                    <g transform="translate(150, 180)"><use href="#bow"/></g>
+                    <g transform="translate(245, 175) rotate(10)"><use href="#bow"/></g>
+
+                    <g transform="translate(40, 110)"><use href="#sparkle-red"/></g>
+                    <g transform="translate(260, 60)"><use href="#sparkle-red"/></g>
+                    <g transform="translate(270, 210)"><use href="#sparkle-red"/></g>
+                    <g transform="translate(30, 230)"><use href="#sparkle-red"/></g>
+                    <g transform="translate(90, 20)"><use href="#sparkle-gold"/></g>
+                    <g transform="translate(190, 25)"><use href="#sparkle-gold"/></g>
+                    <g transform="translate(220, 30)"><use href="#sparkle-gold"/></g>
+
+                    <text x="150" y="310" font-family="'Mali', cursive" font-size="20" font-weight="700" fill="#a02525" text-anchor="middle" letter-spacing="3" style="text-transform: uppercase;">Happy Birthday</text>
+                </svg>
+
+                <div class="flame-hitbox" style="top: 11%; left: 33.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(1, this)">
+                    <div id="flame-1" class="flame"></div>
+                    <div class="smoke"></div>
+                </div>
+                <div class="flame-hitbox" style="top: 8%; left: 50%; transform: translate(-50%, -50%);" onclick="extinguishCandle(2, this)">
+                    <div id="flame-2" class="flame"></div>
+                    <div class="smoke"></div>
+                </div>
+                <div class="flame-hitbox" style="top: 11%; left: 66.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(3, this)">
+                    <div id="flame-3" class="flame"></div>
+                    <div class="smoke"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 3: The Birthday Letter -->
+    <div id="phase3" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fff5f5] z-10 hidden-phase p-5">
+        <div class="floating-heart text-pink-300 text-3xl" style="top: 15%; left: 15%; animation-delay: 0s;">💖</div>
+        <div class="floating-heart text-pink-200 text-2xl" style="top: 25%; right: 20%; animation-delay: 1.5s;">✨</div>
+        <div class="floating-heart text-red-300 text-4xl" style="bottom: 20%; left: 25%; animation-delay: 2.5s;">💕</div>
+        <div class="floating-heart text-pink-400 text-2xl" style="bottom: 30%; right: 15%; animation-delay: 0.8s;">🌸</div>
+
+        <div id="letter-container" class="letter-paper w-full max-w-md p-8 md:p-10 rounded-xl opacity-0 transform translate-y-10 transition-all duration-[2000ms] ease-out">
+            <div class="text-center mb-6">
+                <span class="text-4xl">💌</span>
+            </div>
+            <div class="text-[#4a3f35] text-lg md:text-xl leading-relaxed whitespace-pre-line font-medium" id="letter-content">
+            </div>
+            <div class="mt-8 text-right text-sm text-pink-400 opacity-80">
+                With all my heart ❤️
+            </div>
+            
+            <div class="mt-8 flex justify-center">
+                <button id="btn-to-phase4" class="hidden opacity-0 transition-opacity duration-1000 bg-pink-400 hover:bg-pink-500 text-white px-6 py-2 rounded-full font-medium shadow-md" onclick="transitionToPhase4()">
+                    เปิดดูของขวัญ 🎁
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 4: Wait to screenshot -->
+    <div id="phase4" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fffdf5] z-10 hidden-phase p-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#5c4a3d] mb-4 drop-shadow-sm">มีของขวัญอะไรให้นะะ 🎁</h2>
+        <p class="text-lg md:text-xl text-[#8c7a6d] mb-12">แคปหน้านี้ส่งให้เค้าสิ ส่งให้เค้าแล้วกดปุ่มนี้น้าา</p>
+        
+        <button id="btn-phase4-next" class="bg-gray-300 text-gray-500 px-8 py-3 rounded-full font-semibold transition-all duration-500 cursor-not-allowed shadow-sm">
+            ส่งให้เค้าแล้ว กดตรงนี้น้าา
+        </button>
+    </div>
+
+    <!-- Phase 5: Receipt Reveal -->
+    <div id="phase5" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fffdf5] z-10 hidden-phase p-6 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-pink-400 mb-8 drop-shadow-md">แท่นแท้นน 🎉</h1>
+        
+        <div class="receipt-card w-full max-w-[300px] shadow-xl p-6 border-t-8 border-pink-300 mb-8 z-10">
+            <h2 class="text-2xl font-bold text-gray-700 border-b-2 border-dashed border-gray-300 pb-3 mb-4 text-center">🧾 ของขวัญวันเกิด</h2>
+            <div class="flex justify-between items-center mb-4 text-gray-600 text-lg">
+                <span>ของขวัญวันเกิด</span>
+            </div>
+            <div class="border-t-2 border-dashed border-gray-300 pt-4 mt-2">
+                <div class="flex justify-between items-center text-xl font-bold text-pink-500">
+                    <span>ยอดรวม:</span>
+                    <span>1,000 บาท</span>
+                </div>
+            </div>
+        </div>
+        
+        <p class="text-[#5c4a3d] text-base md:text-lg max-w-[300px] leading-relaxed mb-8 z-10">
+            ไม่รู้จะให้อะไรเป็นของขวัญจริงๆค่ะเค้าขอโทษน้า เอาไปซื้อของที่อยากได้เลยค่ะ 💖
+        </p>
+    </div>
+    
+    <script>
+        let candlesLit = 3;
+        let canBlowCandles = false;
+
+        const textPhase1 = "วันนี้มีอะไรมาเซอร์ไพซ์น้าาา";
+        const textLetter = "แฮร่ สุขสันวันเกิดค่ะ\n\nห้ามบอกเค้านะว่าขออะไร แต่เค้าขอให้แฟนสมหวังทุกอย่างที่แฟนขอ ในชีวิตมีแต่ความสุข รวยๆๆๆๆไปเลย ไม่มีอะไรที่ทำให้แฟนทุกข์นะ ถ้ามีเค้าจะจัดการมันเอง เค้ารักแฟนมากๆถึงจะไม่ค่อยมีเวลาให้แต่ยังรักแฟนเหมือนเดิมเสมอค่ะะ";
+
+        const phase1 = document.getElementById('phase1');
+        const phase2 = document.getElementById('phase2');
+        const phase3 = document.getElementById('phase3');
+        const typingText = document.getElementById('typing-text');
+        const tapHint = document.getElementById('tap-hint');
+        
+        // --- AUDIO SYSTEM (Tone.js) ---
+        let piano, synth, noise;
+        let isAudioInit = false;
+
+        async function initAudio() {
+            if (isAudioInit) return;
+            await Tone.start();
+            isAudioInit = true;
+
+            // Setup Piano
+            piano = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: 'triangle' },
+                envelope: { attack: 0.02, decay: 0.5, sustain: 0.2, release: 1.5 }
+            }).toDestination();
+            piano.volume.value = -8;
+
+            // Setup Firework Synth
+            synth = new Tone.MembraneSynth().toDestination();
+            synth.volume.value = -5;
+
+            noise = new Tone.NoiseSynth({
+                noise: { type: 'pink' },
+                envelope: { attack: 0.005, decay: 0.4, sustain: 0, release: 0.4 }
+            }).toDestination();
+            noise.volume.value = -12;
+        }
+
+        function playHBD() {
+            if (!piano) return;
+            const now = Tone.now();
+            const tempo = 0.5; 
+            const notes = [
+                ["G4", 0.5], ["G4", 0.5], ["A4", 1], ["G4", 1], ["C5", 1], ["B4", 2],
+                ["G4", 0.5], ["G4", 0.5], ["A4", 1], ["G4", 1], ["D5", 1], ["C5", 2]
+            ];
+            let time = now + 0.2;
+            notes.forEach(([note, dur]) => {
+                piano.triggerAttackRelease(note, dur * tempo * 0.8, time);
+                time += dur * tempo;
+            });
+        }
+
+        function playFireworkSound() {
+            if (!synth || !noise) return;
+            const now = Tone.now();
+            synth.triggerAttackRelease("C2", "8n", now);
+            noise.triggerAttackRelease("4n", now + 0.1);
+        }
+
+        function playRomantic() {
+            if (!piano) return;
+            Tone.Transport.stop(); // หยุดเพลงก่อนหน้า
+            Tone.Transport.cancel(); // ล้างคิวเพลงเก่าให้หมดเพื่อไม่ให้ตีกัน
+
+            // ปรับเสียงเปียโนให้มีความนุ่มนวล กังวาน และต่อเนื่องมากขึ้น (คล้ายการเหยียบ Pedal)
+            piano.set({
+                oscillator: { type: 'sine' }, // ใช้คลื่นเสียงที่นุ่มที่สุด
+                envelope: { attack: 0.05, decay: 2, sustain: 0.5, release: 4 }
+            });
+            piano.volume.value = -4;
+
+            // ไล่โน้ตเปียโน (Arpeggio) หวานๆ ซึ้งๆ วนลูป C -> G -> Am -> F
+            const notes = [
+                // C Major
+                "C3", "G3", "E4", "C4", "G4", "E4", "C4", "G3",
+                // G Major
+                "G2", "D3", "D4", "B3", "G4", "D4", "B3", "G3",
+                // A Minor
+                "A2", "E3", "C4", "A3", "E4", "C4", "A3", "E3",
+                // F Major
+                "F2", "C3", "A3", "F3", "C4", "A3", "F3", "C3"
+            ];
+
+            let index = 0;
+            Tone.Transport.scheduleRepeat((time) => {
+                let note = notes[index];
+                
+                // เน้นเสียงโน้ตตัวแรกของห้องให้มีน้ำหนักกว่าตัวอื่นเล็กน้อย
+                let velocity = (index % 8 === 0) ? 0.6 : 0.3;
+                
+                // เล่นโน้ตพร้อมกับลากเสียงยาว (1m = 1 measure) เพื่อให้เสียงประสานกันต่อเนื่อง
+                piano.triggerAttackRelease(note, "1m", time, velocity);
+                
+                index = (index + 1) % notes.length;
+            }, "8n"); // เล่นด้วยจังหวะเขบ็ต 1 ชั้น (ค่อยๆ ไล่โน้ต)
+
+            Tone.Transport.bpm.value = 65; // ความเร็วช้าๆ ให้ความรู้สึกอบอุ่น ซึ้งๆ
+            Tone.Transport.start();
+        }
+
+        window.onload = () => {
+            startTypingEffect(textPhase1, typingText, 120, () => {
+                typingText.classList.remove('typing-cursor');
+                tapHint.style.opacity = 1;
+                
+                phase1.addEventListener('click', async () => {
+                    // MUST init audio inside a click event to bypass browser auto-play block
+                    await initAudio(); 
+                    transitionToPhase2();
+                }, { once: true });
+            });
+        };
+
+        function startTypingEffect(text, element, speed, callback) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    setTimeout(callback, 500);
+                }
+            }
+            setTimeout(type, 1000);
+        }
+
+        function transitionToPhase2() {
+            phase1.classList.add('fade-out');
+            
+            setTimeout(() => {
+                phase1.classList.add('hidden-phase');
+                phase2.classList.remove('hidden-phase');
+                
+                // Play HBD piano melody when phase 2 starts
+                playHBD();
+
+                setTimeout(() => {
+                    document.getElementById('cake-element').style.opacity = 1;
+                    
+                    setTimeout(() => {
+                        document.getElementById('pray-text').style.opacity = 1;
+                        
+                        setTimeout(() => {
+                            document.getElementById('blow-hint').style.opacity = 1;
+                            canBlowCandles = true;
+                        }, 5000);
+                    }, 1500);
+                }, 500);
+            }, 1500);
+        }
+
+        function extinguishCandle(id, hitbox) {
+            if (!canBlowCandles) return;
+            
+            const flame = document.getElementById(`flame-${id}`);
+            if (!flame.classList.contains('extinguished')) {
+                flame.classList.add('extinguished');
+                candlesLit--;
+                
+                const glow = document.getElementById('room-glow');
+                glow.style.opacity = (candlesLit / 3);
+
+                if (candlesLit === 0) {
+                    canBlowCandles = false;
+                    document.getElementById('pray-text').style.opacity = 0;
+                    document.getElementById('blow-hint').style.opacity = 0;
+                    
+                    setTimeout(() => {
+                        triggerFireworks();
+                    }, 1000);
+                }
+            }
+        }
+
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let fireworksActive = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.015;
+                this.size = Math.random() * 3 + 1.5;
+            }
+            update() {
+                this.vy += 0.05;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function createFireworkExplosion(x, y) {
+            const colors = ['#ff477e', '#ff7096', '#ff99ac', '#f8ad9d', '#fbc4ab', '#ffffff', '#ffd166'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+            // Trigger sound effect for this explosion
+            playFireworkSound();
+        }
+
+        function animateFireworks() {
+            if (!fireworksActive && particles.length === 0) return;
+            requestAnimationFrame(animateFireworks);
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'lighter';
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        function triggerFireworks() {
+            canvas.classList.remove('hidden-phase');
+            fireworksActive = true;
+            animateFireworks();
+
+            let explosionCount = 0;
+            const explosionInterval = setInterval(() => {
+                const x = Math.random() * (canvas.width * 0.8) + (canvas.width * 0.1);
+                const y = Math.random() * (canvas.height * 0.6) + (canvas.height * 0.1);
+                createFireworkExplosion(x, y);
+                explosionCount++;
+                
+                if (explosionCount >= 8) {
+                    clearInterval(explosionInterval);
+                    fireworksActive = false;
+                    
+                    setTimeout(() => {
+                        transitionToPhase3();
+                    }, 2000);
+                }
+            }, 500);
+        }
+
+        function transitionToPhase3() {
+            phase2.classList.add('fade-out');
+            canvas.classList.add('fade-out');
+            
+            setTimeout(() => {
+                phase2.classList.add('hidden-phase');
+                canvas.classList.add('hidden-phase');
+                document.body.classList.remove('bg-[#0a0a0a]', 'bg-black');
+                
+                phase3.classList.remove('hidden-phase');
+                phase3.classList.add('fade-in');
+
+                // Start Romantic Piano
+                playRomantic();
+
+                setTimeout(() => {
+                    const letterBox = document.getElementById('letter-container');
+                    letterBox.style.opacity = 1;
+                    letterBox.style.transform = 'translateY(0)';
+                    
+                    const letterContent = document.getElementById('letter-content');
+                    startTypingEffect(textLetter, letterContent, 60, () => {
+                        const btn = document.getElementById('btn-to-phase4');
+                        btn.classList.remove('hidden');
+                        setTimeout(() => {
+                            btn.style.opacity = 1;
+                        }, 100);
+                    });
+                    
+                }, 500);
+
+            }, 1500);
+        }
+
+        function transitionToPhase4() {
+            phase3.classList.add('fade-out');
+            
+            setTimeout(() => {
+                phase3.classList.add('hidden-phase');
+                
+                const phase4 = document.getElementById('phase4');
+                phase4.classList.remove('hidden-phase');
+                phase4.classList.add('fade-in');
+                
+                const btnNext = document.getElementById('btn-phase4-next');
+                setTimeout(() => {
+                    btnNext.disabled = false;
+                    btnNext.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-sm');
+                    btnNext.classList.add('bg-pink-400', 'text-white', 'hover:bg-pink-500', 'shadow-lg', 'cursor-pointer');
+                    btnNext.onclick = transitionToPhase5;
+                }, 20000);
+                
+            }, 1500);
+        }
+
+        function transitionToPhase5() {
+            const phase4 = document.getElementById('phase4');
+            phase4.classList.remove('fade-in');
+            phase4.classList.add('fade-out');
+            
+            setTimeout(() => {
+                phase4.classList.add('hidden-phase');
+                
+                const phase5 = document.getElementById('phase5');
+                phase5.classList.remove('hidden-phase');
+                phase5.classList.add('fade-in');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
