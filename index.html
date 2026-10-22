@@ -61,11 +61,11 @@
         }
 
         .flame {
-            width: 16px;
-            height: 28px;
-            background: #ff9d00;
+            width: 14px;
+            height: 24px;
+            background: #fbd65e; /* สีเหลืองทองอ่อนๆ ให้เข้ากับเค้กวาดมือ */
             border-radius: 50% 50% 20% 20% / 60% 60% 30% 30%;
-            box-shadow: 0 0 25px 8px rgba(255, 150, 0, 0.7), inset 0 0 5px rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px 5px rgba(251, 214, 94, 0.7), inset 0 0 5px rgba(255,255,255,0.8);
             animation: flicker 0.12s infinite alternate, glow 1.5s infinite alternate;
             transform-origin: bottom center;
             transition: all 0.3s ease;
@@ -99,8 +99,8 @@
         }
 
         @keyframes glow {
-            0% { box-shadow: 0 0 20px 5px rgba(255, 150, 0, 0.6), inset 0 0 5px rgba(255,255,255,0.8); }
-            100% { box-shadow: 0 0 35px 12px rgba(255, 180, 0, 0.8), inset 0 0 8px rgba(255,255,255,0.9); }
+            0% { box-shadow: 0 0 15px 5px rgba(251, 214, 94, 0.6), inset 0 0 5px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 25px 8px rgba(251, 214, 94, 0.8), inset 0 0 8px rgba(255,255,255,0.9); }
         }
 
         @keyframes smokeRise {
@@ -169,18 +169,6 @@
             background: radial-gradient(circle at 5px 0, #fff 5px, transparent 6px) repeat-x;
             background-size: 10px 10px;
         }
-        .tape {
-            background-color: rgba(255, 192, 203, 0.7);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        /* Hover effects for image upload frames */
-        .photo-frame {
-            transition: transform 0.2s;
-        }
-        .photo-frame:active {
-            transform: scale(0.98);
-        }
 
     </style>
 </head>
@@ -206,83 +194,136 @@
         </div>
 
         <div id="cake-element" class="cake opacity-0 transition-opacity duration-[2000ms] z-10 flex justify-center items-center">
-            <div class="relative w-[300px] h-[320px]">
-                <svg viewBox="0 0 300 320" class="w-full h-full pointer-events-none drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+            <!-- Custom SVG Cake (Hand-drawn style) -->
+            <div class="relative w-[340px] h-[360px]">
+                <svg viewBox="0 0 340 360" class="w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <g id="bow">
-                            <path d="M -2,0 C -14,-10 -14,10 -2,0 M 2,0 C 14,-10 14,10 2,0" fill="none" stroke="#a02525" stroke-width="2.5" stroke-linecap="round"/>
-                            <circle cx="0" cy="0" r="2.5" fill="#a02525"/>
-                            <path d="M -1,2 Q -5,18 -2,45 M 1,2 Q 5,18 2,40" fill="none" stroke="#a02525" stroke-width="2.5" stroke-linecap="round"/>
-                        </g>
-                        <g id="sparkle-red">
-                            <path d="M 0,-8 Q 0,0 6,0 Q 0,0 0,8 Q 0,0 -6,0 Q 0,0 0,-8" fill="#a02525"/>
-                        </g>
-                        <g id="sparkle-gold">
-                            <path d="M 0,-6 Q 0,0 5,0 Q 0,0 0,6 Q 0,0 -5,0 Q 0,0 0,-6" fill="#c49a52"/>
-                        </g>
-                        <g id="heart-sprinkle">
-                            <path d="M 0,1 C -1,-2 -4,-2 -4,1 L 0,5 L 4,1 C 4,-2 1,-2 0,1" fill="#a02525"/>
-                        </g>
+                        <!-- สไตล์เส้นดินสอ/สีเทียนสีแดงสำหรับวาดตกแต่ง -->
+                        <path id="red-stroke" d="M0,0" fill="none" stroke="#a62c2b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path id="brown-stroke" d="M0,0" fill="none" stroke="#a88572" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </defs>
 
-                    <ellipse cx="150" cy="270" rx="120" ry="15" fill="#151515" opacity="0.3" filter="blur(4px)"/>
-                    <ellipse cx="150" cy="270" rx="130" ry="25" fill="#f4f1e8" opacity="0.05"/>
+                    <!-- เงาใต้เค้ก -->
+                    <ellipse cx="170" cy="300" rx="140" ry="20" fill="#e8e0d5" opacity="0.4"/>
 
-                    <!-- Bottom Tier -->
-                    <path d="M 40, 260 Q 150, 280 260, 260 L 250, 160 Q 150, 180 50, 160 Z" fill="#f8f5eb" stroke="#9f8377" stroke-width="2.5" stroke-linejoin="round"/>
-                    <path d="M 50, 160 Q 150, 180 250, 160" fill="none" stroke="#9f8377" stroke-width="2.5" opacity="0.5"/>
-                    <path d="M 40, 260 Q 70, 275 95, 265 Q 120, 280 150, 268 Q 180, 280 205, 265 Q 230, 275 260, 260" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M 45, 195 Q 100, 220 150, 195 Q 200, 220 255, 195" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-                    <path d="M 42, 230 Q 100, 250 150, 230 Q 200, 250 258, 230" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                    <!-- ชั้นที่ 1 (ล่างสุด) -->
+                    <path d="M 30,285 Q 170,320 310,285 L 300,170 Q 170,195 40,170 Z" fill="#f8f4eb" stroke="#a88572" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M 40,170 Q 170,195 300,170" fill="none" stroke="#a88572" stroke-width="2.5"/>
+                    <!-- ลายขอบเค้กชั้นล่าง (เส้นขยุกขยิก) -->
+                    <path d="M 30,285 Q 50,295 70,282 T 110,295 T 150,298 T 190,295 T 230,292 T 270,290 T 310,285" fill="none" stroke="#a88572" stroke-width="2.5" opacity="0.7"/>
+                    <path d="M 28,290 Q 60,305 90,292 T 160,308 T 220,300 T 280,298 T 312,288" fill="none" stroke="#a88572" stroke-width="1.5" opacity="0.6"/>
+                    
+                    <!-- ลายคลื่นตรงกลางเค้กชั้นล่าง -->
+                    <path d="M 40,240 Q 100,265 170,240 Q 240,265 300,240" fill="none" stroke="#a88572" stroke-width="2" opacity="0.6"/>
+                    <path d="M 35,245 Q 100,270 170,245 Q 240,270 305,245" fill="none" stroke="#a88572" stroke-width="1" opacity="0.5"/>
+                    <circle cx="170" cy="242" r="3" fill="#a88572" opacity="0.6"/>
+                    <circle cx="100" cy="255" r="3" fill="#a88572" opacity="0.6"/>
+                    <circle cx="240" cy="255" r="3" fill="#a88572" opacity="0.6"/>
 
-                    <!-- Top Tier -->
-                    <path d="M 65, 170 Q 150, 185 235, 170 L 230, 90 Q 150, 105 70, 90 Z" fill="#f8f5eb" stroke="#9f8377" stroke-width="2.5" stroke-linejoin="round"/>
-                    <path d="M 70, 90 Q 150, 105 230, 90" fill="none" stroke="#9f8377" stroke-width="2.5" opacity="0.5"/>
-                    <path d="M 70, 90 Q 150, 70 230, 90 Z" fill="#fdfbfa" stroke="#9f8377" stroke-width="2.5"/>
-                    <path d="M 65, 170 Q 100, 185 150, 175 Q 200, 185 235, 170" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M 68, 125 Q 110, 145 150, 125 Q 190, 145 232, 125" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-                    <path d="M 70, 90 Q 90, 105 110, 95 Q 130, 108 150, 98 Q 170, 108 190, 95 Q 210, 105 230, 90" fill="none" stroke="#9f8377" stroke-width="2" stroke-linecap="round"/>
+                    <!-- ชั้นที่ 2 (บนสุด) -->
+                    <path d="M 60,170 Q 170,195 280,170 L 270,80 Q 170,105 70,80 Z" fill="#f8f4eb" stroke="#a88572" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M 70,80 Q 170,105 270,80" fill="none" stroke="#a88572" stroke-width="2.5"/>
+                    <!-- หน้าเค้กชั้นบน -->
+                    <path d="M 70,80 Q 170,55 270,80 Z" fill="#fcfbf7" stroke="#a88572" stroke-width="2.5"/>
+                    
+                    <!-- ลายขอบเค้กชั้นบน -->
+                    <path d="M 60,170 Q 90,185 120,175 T 180,185 T 230,178 T 280,170" fill="none" stroke="#a88572" stroke-width="2.5" opacity="0.7"/>
+                    <path d="M 65,80 Q 95,95 125,85 T 185,95 T 235,88 T 275,80" fill="none" stroke="#a88572" stroke-width="2.5" opacity="0.7"/>
+                    <path d="M 68,85 Q 100,100 130,90 T 190,100 T 240,90 T 272,83" fill="none" stroke="#a88572" stroke-width="1.5" opacity="0.5"/>
 
-                    <!-- Sprinkles & Details -->
-                    <g transform="translate(100, 85) rotate(-15)"><use href="#heart-sprinkle"/></g>
-                    <g transform="translate(130, 80) rotate(10)"><use href="#heart-sprinkle"/></g>
-                    <g transform="translate(180, 82) rotate(-20)"><use href="#heart-sprinkle"/></g>
-                    <g transform="translate(210, 85) rotate(15)"><use href="#heart-sprinkle"/></g>
+                    <!-- ลายคลื่นตรงกลางเค้กชั้นบน -->
+                    <path d="M 65,130 Q 120,145 170,130 Q 220,145 275,130" fill="none" stroke="#a88572" stroke-width="2" opacity="0.6"/>
+                    <path d="M 63,135 Q 120,150 170,135 Q 220,150 277,135" fill="none" stroke="#a88572" stroke-width="1" opacity="0.5"/>
 
-                    <rect x="98" y="45" width="6" height="40" fill="#a02525" rx="1" transform="rotate(-4 101 65)"/>
-                    <path d="M 101, 45 L 101, 35" fill="none" stroke="#601515" stroke-width="1.5"/>
-                    <rect x="147" y="35" width="6" height="45" fill="#a02525" rx="1"/>
-                    <path d="M 150, 35 L 150, 25" fill="none" stroke="#601515" stroke-width="1.5"/>
-                    <rect x="196" y="45" width="6" height="40" fill="#a02525" rx="1" transform="rotate(4 199 65)"/>
-                    <path d="M 199, 45 L 199, 35" fill="none" stroke="#601515" stroke-width="1.5"/>
+                    <!-- เทียน 3 เล่ม (วาดด้วยเส้นสีแดงเข้มสไตล์ดินสอ) -->
+                    <!-- เล่มซ้าย -->
+                    <path d="M 125,75 L 120,35 M 120,35 L 126,75" fill="none" stroke="#a62c2b" stroke-width="4" stroke-linecap="round"/>
+                    <!-- เล่มกลาง -->
+                    <path d="M 170,85 L 170,40 M 170,40 L 170,85" fill="none" stroke="#a62c2b" stroke-width="5" stroke-linecap="round"/>
+                    <!-- เล่มขวา -->
+                    <path d="M 215,75 L 220,35 M 220,35 L 214,75" fill="none" stroke="#a62c2b" stroke-width="4" stroke-linecap="round"/>
 
-                    <g transform="translate(85, 95) rotate(-5)"><use href="#bow"/></g>
-                    <g transform="translate(150, 100)"><use href="#bow"/></g>
-                    <g transform="translate(215, 95) rotate(5)"><use href="#bow"/></g>
-                    <g transform="translate(55, 175) rotate(-10)"><use href="#bow"/></g>
-                    <g transform="translate(150, 180)"><use href="#bow"/></g>
-                    <g transform="translate(245, 175) rotate(10)"><use href="#bow"/></g>
+                    <!-- ไส้เทียน -->
+                    <path d="M 120,35 L 120,28 M 170,40 L 170,32 M 220,35 L 220,28" fill="none" stroke="#664433" stroke-width="1.5"/>
 
-                    <g transform="translate(40, 110)"><use href="#sparkle-red"/></g>
-                    <g transform="translate(260, 60)"><use href="#sparkle-red"/></g>
-                    <g transform="translate(270, 210)"><use href="#sparkle-red"/></g>
-                    <g transform="translate(30, 230)"><use href="#sparkle-red"/></g>
-                    <g transform="translate(90, 20)"><use href="#sparkle-gold"/></g>
-                    <g transform="translate(190, 25)"><use href="#sparkle-gold"/></g>
-                    <g transform="translate(220, 30)"><use href="#sparkle-gold"/></g>
+                    <!-- โบว์สีแดง (วาดเส้นซ้อนให้ดูเหมือนวาดมือ) -->
+                    <g stroke="#a62c2b" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                        <!-- โบว์ชั้นบน ซ้าย -->
+                        <path d="M 115,95 Q 100,85 110,80 Q 120,85 115,95 Z" stroke-width="2.5"/>
+                        <path d="M 115,95 Q 130,85 120,80 Q 110,85 115,95 Z" stroke-width="2.5"/>
+                        <path d="M 115,95 Q 110,120 112,150 M 115,95 Q 120,130 118,145" stroke-width="2.5"/>
+                        <circle cx="115" cy="95" r="2" fill="#a62c2b"/>
+                        
+                        <!-- โบว์ชั้นบน กลาง -->
+                        <path d="M 170,102 Q 155,92 165,87 Q 175,92 170,102 Z" stroke-width="3"/>
+                        <path d="M 170,102 Q 185,92 175,87 Q 165,92 170,102 Z" stroke-width="3"/>
+                        <path d="M 170,102 Q 165,130 167,160 M 170,102 Q 175,140 173,155" stroke-width="3"/>
+                        <circle cx="170" cy="102" r="2.5" fill="#a62c2b"/>
 
-                    <text x="150" y="310" font-family="'Mali', cursive" font-size="20" font-weight="700" fill="#a02525" text-anchor="middle" letter-spacing="3" style="text-transform: uppercase;">Happy Birthday</text>
+                        <!-- โบว์ชั้นบน ขวา -->
+                        <path d="M 225,95 Q 210,85 220,80 Q 230,85 225,95 Z" stroke-width="2.5"/>
+                        <path d="M 225,95 Q 240,85 230,80 Q 220,85 225,95 Z" stroke-width="2.5"/>
+                        <path d="M 225,95 Q 220,120 222,150 M 225,95 Q 230,130 228,145" stroke-width="2.5"/>
+                        <circle cx="225" cy="95" r="2" fill="#a62c2b"/>
+
+                        <!-- โบว์ชั้นล่าง ซ้ายสุด -->
+                        <path d="M 45,175 Q 35,165 40,160 Q 50,165 45,175 Z" stroke-width="2.5"/>
+                        <path d="M 45,175 Q 55,165 50,160 Q 40,165 45,175 Z" stroke-width="2.5"/>
+                        <path d="M 45,175 Q 40,210 42,240 M 45,175 Q 48,220 46,235" stroke-width="2.5"/>
+
+                        <!-- โบว์ชั้นล่าง กลางซ้าย -->
+                        <path d="M 115,185 Q 100,175 110,170 Q 120,175 115,185 Z" stroke-width="3"/>
+                        <path d="M 115,185 Q 130,175 120,170 Q 110,175 115,185 Z" stroke-width="3"/>
+                        <path d="M 115,185 Q 110,220 112,250 M 115,185 Q 120,230 118,245" stroke-width="3"/>
+
+                        <!-- โบว์ชั้นล่าง กลางขวา -->
+                        <path d="M 225,185 Q 210,175 220,170 Q 230,175 225,185 Z" stroke-width="3"/>
+                        <path d="M 225,185 Q 240,175 230,170 Q 220,175 225,185 Z" stroke-width="3"/>
+                        <path d="M 225,185 Q 220,220 222,250 M 225,185 Q 230,230 228,245" stroke-width="3"/>
+
+                        <!-- โบว์ชั้นล่าง ขวาสุด -->
+                        <path d="M 295,175 Q 285,165 290,160 Q 300,165 295,175 Z" stroke-width="2.5"/>
+                        <path d="M 295,175 Q 305,165 300,160 Q 290,165 295,175 Z" stroke-width="2.5"/>
+                        <path d="M 295,175 Q 290,210 292,240 M 295,175 Q 298,220 296,235" stroke-width="2.5"/>
+                    </g>
+
+                    <!-- ของตกแต่งรอบๆ (วิ้งๆ สีแดงและทอง) -->
+                    <g fill="#a62c2b">
+                        <!-- หัวใจเล็กๆ บนหน้าเค้ก -->
+                        <path d="M 100,70 C 98,66 94,68 94,71 C 94,74 100,77 100,77 C 100,77 106,74 106,71 C 106,68 102,66 100,70 Z" transform="rotate(-15 100 70)"/>
+                        <path d="M 240,75 C 238,71 234,73 234,76 C 234,79 240,82 240,82 C 240,82 246,79 246,76 C 246,73 242,71 240,75 Z" transform="rotate(20 240 75)"/>
+                        <path d="M 140,85 C 138,81 134,83 134,86 C 134,89 140,92 140,92 C 140,92 146,89 146,86 C 146,83 142,81 140,85 Z" transform="scale(0.8) translate(30, 20)"/>
+                    </g>
+
+                    <g stroke="#a62c2b" stroke-width="2" fill="none">
+                        <!-- ประกายวิ้งๆ -->
+                        <path d="M 40,130 Q 50,130 50,120 M 50,120 Q 50,130 60,130 M 60,130 Q 50,130 50,140 M 50,140 Q 50,130 40,130 Z" fill="#a62c2b"/>
+                        <path d="M 270,50 Q 280,50 280,40 M 280,40 Q 280,50 290,50 M 290,50 Q 280,50 280,60 M 280,60 Q 280,50 270,50 Z" fill="#a62c2b"/>
+                        <path d="M 310,240 Q 320,240 320,230 M 320,230 Q 320,240 330,240 M 330,240 Q 320,240 320,250 M 320,250 Q 320,240 310,240 Z" fill="#a62c2b"/>
+                        <path d="M 20,270 Q 30,270 30,260 M 30,260 Q 30,270 40,270 M 40,270 Q 30,270 30,280 M 30,280 Q 30,270 20,270 Z" fill="#a62c2b"/>
+                    </g>
+
+                    <g stroke="#c79a40" stroke-width="2" fill="none">
+                        <!-- ประกายสีทองด้านบน -->
+                        <path d="M 125,20 L 125,10 M 120,15 L 130,15"/>
+                        <path d="M 185,15 L 185,5 M 180,10 L 190,10"/>
+                        <path d="M 210,25 L 210,15 M 205,20 L 215,20"/>
+                    </g>
+
+                    <!-- Text HAPPY BIRTHDAY (ฟอนต์วาดมือ) -->
+                    <text x="170" y="340" font-family="'Mali', cursive" font-size="24" font-weight="700" fill="#a62c2b" text-anchor="middle" letter-spacing="2" style="text-transform: uppercase; filter: drop-shadow(1px 1px 0px rgba(166,44,43,0.3));">Happy Birthday</text>
                 </svg>
 
-                <div class="flame-hitbox" style="top: 11%; left: 33.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(1, this)">
+                <!-- ตำแหน่งเทียนอ้างอิงจาก SVG: ซ้าย กลาง ขวา -->
+                <div class="flame-hitbox" style="top: 8%; left: 35.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(1, this)">
                     <div id="flame-1" class="flame"></div>
                     <div class="smoke"></div>
                 </div>
-                <div class="flame-hitbox" style="top: 8%; left: 50%; transform: translate(-50%, -50%);" onclick="extinguishCandle(2, this)">
+                <div class="flame-hitbox" style="top: 9%; left: 50%; transform: translate(-50%, -50%);" onclick="extinguishCandle(2, this)">
                     <div id="flame-2" class="flame"></div>
                     <div class="smoke"></div>
                 </div>
-                <div class="flame-hitbox" style="top: 11%; left: 66.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(3, this)">
+                <div class="flame-hitbox" style="top: 8%; left: 64.5%; transform: translate(-50%, -50%);" onclick="extinguishCandle(3, this)">
                     <div id="flame-3" class="flame"></div>
                     <div class="smoke"></div>
                 </div>
@@ -325,7 +366,7 @@
         </button>
     </div>
 
-    <!-- Phase 5: Receipt Reveal -->
+    <!-- Phase 5: Receipt Reveal (จบที่หน้านี้) -->
     <div id="phase5" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fffdf5] z-10 hidden-phase p-6 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-pink-400 mb-8 drop-shadow-md">แท่นแท้นน 🎉</h1>
         
@@ -346,7 +387,7 @@
             ไม่รู้จะให้อะไรเป็นของขวัญจริงๆค่ะเค้าขอโทษน้า เอาไปซื้อของที่อยากได้เลยค่ะ 💖
         </p>
     </div>
-    
+
     <script>
         let candlesLit = 3;
         let canBlowCandles = false;
@@ -411,42 +452,33 @@
 
         function playRomantic() {
             if (!piano) return;
-            Tone.Transport.stop(); // หยุดเพลงก่อนหน้า
-            Tone.Transport.cancel(); // ล้างคิวเพลงเก่าให้หมดเพื่อไม่ให้ตีกัน
+            Tone.Transport.stop(); 
+            Tone.Transport.cancel(); 
 
-            // ปรับเสียงเปียโนให้มีความนุ่มนวล กังวาน และต่อเนื่องมากขึ้น (คล้ายการเหยียบ Pedal)
+            // ปรับเสียงเปียโนให้นุ่มนวล ลากยาว เหมือนเหยียบ Pedal
             piano.set({
-                oscillator: { type: 'sine' }, // ใช้คลื่นเสียงที่นุ่มที่สุด
+                oscillator: { type: 'sine' }, 
                 envelope: { attack: 0.05, decay: 2, sustain: 0.5, release: 4 }
             });
             piano.volume.value = -4;
 
-            // ไล่โน้ตเปียโน (Arpeggio) หวานๆ ซึ้งๆ วนลูป C -> G -> Am -> F
+            // คอร์ดแบบ Arpeggio ช้าๆ ซึ้งๆ
             const notes = [
-                // C Major
                 "C3", "G3", "E4", "C4", "G4", "E4", "C4", "G3",
-                // G Major
                 "G2", "D3", "D4", "B3", "G4", "D4", "B3", "G3",
-                // A Minor
                 "A2", "E3", "C4", "A3", "E4", "C4", "A3", "E3",
-                // F Major
                 "F2", "C3", "A3", "F3", "C4", "A3", "F3", "C3"
             ];
 
             let index = 0;
             Tone.Transport.scheduleRepeat((time) => {
                 let note = notes[index];
-                
-                // เน้นเสียงโน้ตตัวแรกของห้องให้มีน้ำหนักกว่าตัวอื่นเล็กน้อย
                 let velocity = (index % 8 === 0) ? 0.6 : 0.3;
-                
-                // เล่นโน้ตพร้อมกับลากเสียงยาว (1m = 1 measure) เพื่อให้เสียงประสานกันต่อเนื่อง
                 piano.triggerAttackRelease(note, "1m", time, velocity);
-                
                 index = (index + 1) % notes.length;
-            }, "8n"); // เล่นด้วยจังหวะเขบ็ต 1 ชั้น (ค่อยๆ ไล่โน้ต)
+            }, "8n"); 
 
-            Tone.Transport.bpm.value = 65; // ความเร็วช้าๆ ให้ความรู้สึกอบอุ่น ซึ้งๆ
+            Tone.Transport.bpm.value = 65; 
             Tone.Transport.start();
         }
 
@@ -456,7 +488,6 @@
                 tapHint.style.opacity = 1;
                 
                 phase1.addEventListener('click', async () => {
-                    // MUST init audio inside a click event to bypass browser auto-play block
                     await initAudio(); 
                     transitionToPhase2();
                 }, { once: true });
@@ -485,7 +516,6 @@
                 phase1.classList.add('hidden-phase');
                 phase2.classList.remove('hidden-phase');
                 
-                // Play HBD piano melody when phase 2 starts
                 playHBD();
 
                 setTimeout(() => {
@@ -572,7 +602,6 @@
             for (let i = 0; i < 80; i++) {
                 particles.push(new Particle(x, y, color));
             }
-            // Trigger sound effect for this explosion
             playFireworkSound();
         }
 
@@ -630,7 +659,6 @@
                 phase3.classList.remove('hidden-phase');
                 phase3.classList.add('fade-in');
 
-                // Start Romantic Piano
                 playRomantic();
 
                 setTimeout(() => {
