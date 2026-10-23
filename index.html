@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ร้านจัมโบ้</title>
     
-    <!-- ส่วนนี้คือการบังคับให้แอปแชทแสดงแค่คำว่า บริการร้านจัมโบ้ เพื่อซ่อนเซอร์ไพรส์ -->
+    <!-- ซ่อนรายละเอียดไม่ให้แอปแชทดึงข้อความอื่นไปสปอยล์ -->
     <meta name="description" content="บริการร้านจัมโบ้">
     <meta property="og:title" content="ร้านจัมโบ้">
     <meta property="og:description" content="บริการร้านจัมโบ้">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="">
-    <!-- ใส่รูปภาพหลอก (ถ้ามีลิงก์รูปโลโก้ร้านสามารถนำมาใส่ตรง content ได้) -->
-    <meta property="og:image" content="">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -187,13 +184,22 @@
     <!-- Firework Canvas -->
     <canvas id="fireworksCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-40 hidden-phase"></canvas>
 
+    <!-- Phase 0: Decoy Shop Page -->
+    <div id="phase0" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fcfcfc] z-50 p-6 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#1f2937] mb-3">บริการร้านจัมโบ้</h1>
+        <p class="text-xl md:text-2xl text-[#4b5563] mb-6">รับทำป้าย ลายน้ำ เว็บ และอื่นๆ</p>
+        <div class="bg-blue-100 text-blue-700 font-semibold px-6 py-3 rounded-full text-lg shadow-sm border border-blue-200">
+            ราคาเริ่มต้น 69.-
+        </div>
+    </div>
+
     <!-- Phase 1: Black screen -->
-    <div id="phase1" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-30 cursor-pointer p-6">
+    <div id="phase1" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-30 cursor-pointer p-6 hidden-phase">
         <h1 id="typing-text" class="text-white text-2xl md:text-4xl font-semibold text-center leading-relaxed h-16 typing-cursor"></h1>
         <p id="tap-hint" class="text-gray-500 text-sm mt-8 opacity-0 transition-opacity duration-1000">( แตะหน้าจอเพื่อไปต่อ )</p>
     </div>
 
-    <!-- Phase 2: Cake and Candles (วาดมือ) -->
+    <!-- Phase 2: Cake and Candles -->
     <div id="phase2" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a] z-20 hidden-phase">
         <div id="room-glow"></div>
         
@@ -346,7 +352,7 @@
         </button>
     </div>
 
-    <!-- Phase 5: Receipt Reveal (จบที่หน้านี้) -->
+    <!-- Phase 5: Receipt Reveal -->
     <div id="phase5" class="absolute inset-0 flex flex-col items-center justify-center bg-[#fffdf5] z-10 hidden-phase p-6 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-pink-400 mb-8 drop-shadow-md">แท่นแท้นน 🎉</h1>
         
@@ -375,6 +381,7 @@
         const textPhase1 = "วันนี้มีอะไรมาเซอร์ไพซ์น้าาา";
         const textLetter = "แฮร่ สุขสันวันเกิดค่ะ\n\nห้ามบอกเค้านะว่าขออะไร แต่เค้าขอให้แฟนสมหวังทุกอย่างที่แฟนขอ ในชีวิตมีแต่ความสุข รวยๆๆๆๆไปเลย ไม่มีอะไรที่ทำให้แฟนทุกข์นะ ถ้ามีเค้าจะจัดการมันเอง เค้ารักแฟนมากๆถึงจะไม่ค่อยมีเวลาให้แต่ยังรักแฟนเหมือนเดิมเสมอค่ะะ";
 
+        const phase0 = document.getElementById('phase0');
         const phase1 = document.getElementById('phase1');
         const phase2 = document.getElementById('phase2');
         const phase3 = document.getElementById('phase3');
@@ -459,15 +466,28 @@
         }
 
         window.onload = () => {
-            startTypingEffect(textPhase1, typingText, 120, () => {
-                typingText.classList.remove('typing-cursor');
-                tapHint.style.opacity = 1;
+            // Phase 0: Show fake shop page for 3 seconds
+            setTimeout(() => {
+                phase0.classList.add('fade-out');
                 
-                phase1.addEventListener('click', async () => {
-                    await initAudio(); 
-                    transitionToPhase2();
-                }, { once: true });
-            });
+                setTimeout(() => {
+                    phase0.classList.add('hidden-phase');
+                    phase1.classList.remove('hidden-phase');
+                    phase1.classList.add('fade-in');
+                    
+                    // Start Typing effect for Phase 1
+                    startTypingEffect(textPhase1, typingText, 120, () => {
+                        typingText.classList.remove('typing-cursor');
+                        tapHint.style.opacity = 1;
+                        
+                        phase1.addEventListener('click', async () => {
+                            await initAudio(); 
+                            transitionToPhase2();
+                        }, { once: true });
+                    });
+                    
+                }, 1500);
+            }, 3000);
         };
 
         function startTypingEffect(text, element, speed, callback) {
