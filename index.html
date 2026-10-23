@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ร้านจัมโบ้</title>
     
-    <!-- กำหนดรายละเอียดตอนแชร์ลิงก์ลงแชท -->
+    <!-- ส่วนนี้คือการบังคับให้แอปแชทแสดงแค่คำว่า บริการร้านจัมโบ้ เพื่อซ่อนเซอร์ไพรส์ -->
     <meta name="description" content="บริการร้านจัมโบ้">
     <meta property="og:title" content="ร้านจัมโบ้">
     <meta property="og:description" content="บริการร้านจัมโบ้">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <!-- ใส่รูปภาพหลอก (ถ้ามีลิงก์รูปโลโก้ร้านสามารถนำมาใส่ตรง content ได้) -->
+    <meta property="og:image" content="">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -176,7 +179,6 @@
             background: radial-gradient(circle at 5px 0, #fff 5px, transparent 6px) repeat-x;
             background-size: 10px 10px;
         }
-
     </style>
 </head>
 
@@ -191,7 +193,7 @@
         <p id="tap-hint" class="text-gray-500 text-sm mt-8 opacity-0 transition-opacity duration-1000">( แตะหน้าจอเพื่อไปต่อ )</p>
     </div>
 
-    <!-- Phase 2: Cake and Candles -->
+    <!-- Phase 2: Cake and Candles (วาดมือ) -->
     <div id="phase2" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a] z-20 hidden-phase">
         <div id="room-glow"></div>
         
@@ -201,7 +203,6 @@
         </div>
 
         <div id="cake-element" class="cake opacity-0 transition-opacity duration-[2000ms] z-10 flex justify-center items-center">
-            <!-- Custom SVG Cake (Hand-drawn style) -->
             <div class="relative w-[340px] h-[360px]">
                 <svg viewBox="0 0 340 360" class="w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
